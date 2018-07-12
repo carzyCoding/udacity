@@ -33,8 +33,7 @@ $(function() {
          */
         it('feed url is defined',function () {
             allFeeds.forEach(function (item) {
-                expect(item['url']).toBeDefined();
-                expect(item['url']).not.toBe('');
+                notEmpty(item['url']);
             })
         })
 
@@ -44,10 +43,14 @@ $(function() {
          */
         it('feed name is defined',function () {
             allFeeds.forEach(function (item) {
-                expect(item['name']).toBeDefined();
-                expect(item['name']).not.toBe('');
+                notEmpty(item['name']);
             })
         })
+
+        function notEmpty(name) {
+            expect(name).toBeDefined();
+            expect(name).not.toBe('');
+        }
     });
 
     /* TODO: Write a new test suite named "The menu" */
@@ -86,9 +89,7 @@ $(function() {
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
         beforeEach(function (done) {
-            loadFeed(0,function () {
-                done();
-            })
+            loadFeed(0,done)
         })
         it('at least a sing .entry',function () {
             expect($('.feed .entry').length).toBeGreaterThan(0);
@@ -101,16 +102,19 @@ $(function() {
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
-        var oldHtml = $('.feed').html();
-        var newHtml = '';
+        var firstHtml = '';
+        var secondHtml = '';
         beforeEach(function (done) {
             loadFeed(1,function () {
-                newHtml = $('.feed').html();
-                done();
-            })
+                firstHtml = $('.feed').html();
+                loadFeed(2,function () {
+                    secondHtml = $('.feed').html();
+                    done();
+                })
+            });
         })
         it('actually changes',function () {
-            expect(oldHtml).not.toBe(newHtml);
+            expect(firstHtml).not.toBe(secondHtml);
         })
     })
 
